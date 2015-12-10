@@ -4,11 +4,15 @@ var util = require("util"),
     server = require('http').createServer(app),
     io = require("socket.io"),
     os = require('os');
+    connect = require('connect');
+    serveStatic = require('serve-static');
 	Player = require("./js/core/player.js").Player;
     Utils = require("./js/core/utils.js").Utils;
     Bomb = require("./js/core/bomb.js").Bomb;
     Grid = require("./js/core/grid.js").Grid;
     Item = require("./js/core/item.js").Item;
+    portServer = process.env.PORT || 3000;
+    portClient = process.env.PORT || 8080;
 
 var socket,
     players,
@@ -22,20 +26,23 @@ function init() {
     items = [];
 
     // Define the used port
-    var port = process.env.PORT || 8000;
+
 
     // Set up Socket.IO to listen on port 8000
 	// socket = io.listen(port);
     socket = io.listen(server);
 
-    server.listen(port);
+    server.listen(portServer);
+
+    connect().use(serveStatic(__dirname)).listen(portClient);
 
 	// Start listening for events
 	setEventHandlers();
 
     setTimeout(explodeBombs(), 10);
 
-    util.log("Running at " + getLocalIp()+":"+port);
+    util.log("Running Server at " + getLocalIp()+":"+portServer);
+    util.log("Running Client at " + getLocalIp()+":"+portClient);
 
     util.log("Waiting the players...");
 };

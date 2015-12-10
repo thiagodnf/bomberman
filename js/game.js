@@ -115,9 +115,11 @@ function init() {
 	keys = new Keys();
 
 	var host = location.hostname;
-	var port = 8000;
+	var port = 3000;
 
 	socket = io.connect(host + ":" + port);
+	// socket = io.connect("https://thiagodnf-bomberman.herokuapp.com:45555");
+
 
 	var startPos = new Utils().getStartPosition();
 

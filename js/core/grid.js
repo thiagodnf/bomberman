@@ -7,10 +7,10 @@ if (typeof exports == "undefined") {
 }
 
 var Grid = function() {
-	this.maxI = 11;
-	this.maxJ = 11;
-	this.width = 40;
-	this.height = 40;
+	this.maxI = 15;
+	this.maxJ = 15;
+	this.width = 32;
+	this.height = 32;
 
 	this.draw = function(ctx) {
 
@@ -52,7 +52,7 @@ var Grid = function() {
 				}
 			}
 		}
-		
+
 		return freePositions;
 	};
 };

@@ -5,16 +5,17 @@ body{
 }
 
 #div-canvas{
-	padding-top: 40px;
-	padding-left: 40px;
-	width: 520px;
+	padding-top: 32px;
+	padding-left: 32px;
+	width: 544px;
+	height: 544px;
 	padding-bottom: 34px;
 	background-image: url("../img/wall.png");
-	background-size: 40px 40px;
+	background-size: 32px 32px;
 	background-repeat: repeat-y repeat-x;
 }
 
-canvas {	
+canvas {
 	background-image: url("../img/floor.png");
 	background-repeat: repeat-y repeat-x;
 	-webkit-touch-callout: none;
@@ -29,5 +30,3 @@ canvas {
    background:rgba(0,0,0,0.2);   /* for latest browsers */
    border-color: transparent;
 }
-
-

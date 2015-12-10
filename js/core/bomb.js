@@ -6,13 +6,13 @@ if (typeof exports == "undefined") {
   exports = {};
 }
 
-var Bomb = function(id, grid, x, y, playerId) {
+var Bomb = function(id, grid, x, y, playerId, size) {
     this.id = id;
     this.grid = grid;
     this.insertIn = new Date().getTime(),
 	this.x = x;
   	this.y = y;
-    this.size = 3;
+    this.size = size;
     this.explode = null;
     this.playerId = playerId;
 
@@ -37,7 +37,24 @@ var Bomb = function(id, grid, x, y, playerId) {
         return range;
     };
 
-    this.killThisBomb = function(bomb){
+    this.explodedItems = function(items){
+        var explodedItems = [];
+
+        var range = this.getRange();
+
+        for(var j = 0; j < items.length; j++){
+            for(var i = 0; i < range.length; i++){
+                if(range[i].x == items[j].x && range[i].y == items[j].y){
+                    explodedItems.push(items[j]);
+                    break;
+                }
+            }
+        }
+
+        return explodedItems;
+    }
+
+    this.explodeThisBomb = function(bomb){
         var range = this.getRange();
 
         for(var i = 0; i < range.length; i++){
@@ -59,15 +76,15 @@ var Bomb = function(id, grid, x, y, playerId) {
 
             this.drawRange(this.x, this.y);
         }else{
-		var type = Math.floor(countFps/15);
-		ctx.drawImage(sceneryImages['bomb_'+type], this.x, this.y, this.grid.width, this.grid.height);
+            var type = Math.floor(countFps/15);
+            ctx.drawImage(sceneryImages['bomb_'+type], this.x, this.y, this.grid.width, this.grid.height);
         }
 	};
 
     this.drawRange = function(x, y){
         ctx.fillStyle = 'yellow';
         ctx.fillRect(x, y, this.grid.width, this.grid.height);
-        ctx.drawImage(explodeImage, x, y, this.grid.width, this.grid.height);
+        ctx.drawImage(sceneryImages['explode'], x, y, this.grid.width, this.grid.height);
     }
 };
 

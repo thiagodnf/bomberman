@@ -114,12 +114,13 @@ function init() {
 	// Initialise keyboard controls
 	keys = new Keys();
 
-	var host = location.hostname;
-	var port = 3000;
+	console.log(window.location.href);
 
-	socket = io.connect(host + ":" + port);
-	// socket = io.connect("https://thiagodnf-bomberman.herokuapp.com:45555");
-
+	if(window.location.href == 'thiagodnf.github.io/bomberman'){
+		socket = io.connect("thiagodnf-bomberman-server.herokuapp.com");
+	}else{
+		socket = io.connect("localhost:3000");
+	}
 
 	var startPos = new Utils().getStartPosition();
 

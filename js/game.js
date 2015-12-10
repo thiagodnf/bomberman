@@ -114,9 +114,9 @@ function init() {
 	// Initialise keyboard controls
 	keys = new Keys();
 
-	console.log(window.location.href);
+	console.log(window.location.host);
 
-	if(window.location.href == 'http://thiagodnf.github.io/bomberman/'){
+	if(window.location.host == 'thiagodnf.github.io/bomberman/'){
 		socket = io.connect("thiagodnf-bomberman-server.herokuapp.com");
 	}else{
 		socket = io.connect("localhost:3000");
@@ -409,6 +409,10 @@ $(function(){
 	if ( ! Date.now) {
 		Date.now = function() { return new Date().getTime(); }
 	}
+
+	$("#btn-restart").click(function(){
+		location.reload();
+	});
 
 	$.validate({
 		form : '#form-new-player',

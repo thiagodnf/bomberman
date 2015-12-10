@@ -12,7 +12,7 @@ var Bomb = function(id, grid, x, y, playerId) {
     this.insertIn = new Date().getTime(),
 	this.x = x;
   	this.y = y;
-    this.size = 10;
+    this.size = 5;
     this.explode = null;
     this.playerId = playerId;
 
@@ -54,28 +54,27 @@ var Bomb = function(id, grid, x, y, playerId) {
 
             var range = this.getRange();
 
+            console.log(range);
+
             for(var i = 0; i < range.length; i++){
                 var x = range[i].x,
                     y = range[i].y;
 
                 if(x > this.x || x < this.x) {
-
-                    console.log(range);
-                    if(i != range.length-1 && i != 0)
-                        ctx.drawImage(sceneryImages['explosion'], 32, 0, 32, 32, range[i].x, range[i].y, this.grid.width, this.grid.height);
-                    
-                    if(x < this.x && i == 0)
-                        this.drawRange(range[i].x, range[i].y);//ctx.drawImage(sceneryImages['explosion'], 0, 64, 32, 32, range[i].x, range[i].y, this.grid.width, this.grid.height);
-                    
-                    if(x > this.x && i == range.length-1)
-                        ctx.drawImage(sceneryImages['explosion'], 0, 64, 32, 32, range[i].x, range[i].y, this.grid.width, this.grid.height);
+                    if(i == range.length-1)
+                        ctx.drawImage(sceneryImages['explosion'], 0, 64, 32, 32, x, y, this.grid.width, this.grid.height);
+                    else if(i == range.length-2)
+                        ctx.drawImage(sceneryImages['explosion'], 32, 32, 32, 32, x, y, this.grid.width, this.grid.height);
+                    else if(i < range.length-4)
+                        ctx.drawImage(sceneryImages['explosion'], 32, 0, 32, 32, x, y, this.grid.width, this.grid.height);
+                } else if(y > this.y || y < this.y) {
+                    if(i == range.length-3)
+                        ctx.drawImage(sceneryImages['explosion'], 0, 32, 32, 32, x, y, this.grid.width, this.grid.height);
+                    else if(i == range.length-4)
+                        ctx.drawImage(sceneryImages['explosion'], 32, 64, 32, 32, x, y, this.grid.width, this.grid.height);
+                    else if(i < range.length-4)
+                        ctx.drawImage(sceneryImages['explosion'], 64, 0, 32, 32, x, y, this.grid.width, this.grid.height);
                 }
-
-                //if(y > this.y || y < this.y)
-                //    if(y > this.y && i == range.length-1)
-                //        ctx.drawImage(sceneryImages['explosion'], 64, 0, 32, 32, range[i].x, range[i].y, this.grid.width, this.grid.height);
-                //    else
-                //        ctx.drawImage(sceneryImages['explosion'], 64, 0, 32, 32, range[i].x, range[i].y, this.grid.width, this.grid.height);
             }
 
             //draw center
@@ -86,8 +85,8 @@ var Bomb = function(id, grid, x, y, playerId) {
         }
 	};
 
-    this.drawRange = function(x, y){
-        ctx.fillStyle = 'yellow';
+    this.drawRange = function(x, y, color){
+        ctx.fillStyle = color;
         ctx.fillRect(x, y, this.grid.width, this.grid.height);
         ctx.drawImage(explodeImage, x, y, this.grid.width, this.grid.height);
     }

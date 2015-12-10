@@ -114,7 +114,9 @@ function init() {
 	// Initialise keyboard controls
 	keys = new Keys();
 
-	socket = io.connect("http://localhost:8000");
+	//socket = io.connect("http://localhost:8000");
+
+	socket = io.connect("https://thiagodnf-bomberman.herokuapp.com:8000");
 
 	var startPos = new Utils().getStartPosition();
 

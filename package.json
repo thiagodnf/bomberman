@@ -4,7 +4,8 @@
 	"description": "Bomberman",
 	"main": "server.js",
 	"scripts": {
-		"start": "node server.js"
+		"start": "node server.js",
+		"start": "nodejs server.js"
 	},
 	"engines": {
 		"node": ">=0.10.0"

@@ -116,7 +116,7 @@ function init() {
 
 	//socket = io.connect("http://localhost:8000");
 
-	socket = io.connect("https://thiagodnf-bomberman.herokuapp.com:8000");
+	socket = io.connect("http://172.17.239.218:8000");
 
 	var startPos = new Utils().getStartPosition();
 

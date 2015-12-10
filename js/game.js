@@ -8,35 +8,42 @@ var canvas,			// Canvas DOM element
 	grid,			// Grid
 	remotePlayers,
 	bombs,
+	items,
 	localPlayer,	// Local player
-	image,
+	countFps = 0,
+	playerImages = [],
+	sceneryImages = [],
 	socket;
 
-var countFps = 0;
+function appendNewPlayer(player){
+	var img = playerImages[player.image];
 
-var playerImages = [];
-var sceneryImages = [];
+	var id = null;
 
-var playerOneImage = new Image();
-var playerTwoImage = new Image();
-var playerThreeImage = new Image();
-var playerFourImage = new Image();
-var bombImage = new Image();
-var explodeImage = new Image();
-var wallImage = new Image();
+	if(player.id == null){
+		id = socket.io.engine.id;
+	}else{
+		id = player.id;
+	}
+
+	$("#panel-players-online").append('<li id="'+id+'" class="list-group-item"> <span class="badge" title="'+player.deadPlayers+'">'+player.deadPlayers+'</span> <img src="'+img.src+'"/> '+player.name+'</li>');
+
+	updateRanking();
+}
+
+function updateRanking(){
+	tinysort.defaults.order = 'desc';
+	tinysort('ul#panel-players-online>li',{selector:'span'});
+}
 
 function update(){
 	if(localPlayer == null){
 		return;
 	}
 
+	// Remove exploded bombs after 500ms
 	for(var i = 0; i < bombs.length; i++){
-
 		if(bombs[i].explode != null){
-
-			if(localPlayer.kill(bombs[i])){
-				socket.emit("killed player", {id: localPlayer.id});
-			}
 			if(new Date().getTime() - bombs[i].explode > 500){
 				bombs.splice(bombs.indexOf(bombs[i]), 1);
 			}
@@ -47,11 +54,17 @@ function update(){
 		socket.emit("move player", {x: localPlayer.x, y: localPlayer.y});
 	}
 
+	var gotItem = localPlayer.getAnItem(items);
+
+	if(gotItem){
+		socket.emit("remove item", {id: gotItem.id});
+	}
+
 	var bomb = localPlayer.newBomb(keys);
 
 	if(bomb){
 		// Broadcast to another players
-		socket.emit("new bomb", {x:bomb.x, y:bomb.y, playerId: bomb.playerId});
+		socket.emit("new bomb", {x:bomb.x, y:bomb.y, playerId: bomb.playerId, size: bomb.size});
 	}
 }
 
@@ -66,6 +79,11 @@ function draw(){
 		bombs[i].draw(ctx);
 	};
 
+	// Draw the items
+	for (var i = 0; i < items.length; i++) {
+		items[i].draw(ctx);
+	};
+
 	// Draw the local and others players
 	if(localPlayer != null) localPlayer.draw(ctx);
 
@@ -73,7 +91,7 @@ function draw(){
 	for (var i = 0; i < remotePlayers.length; i++) {
 		remotePlayers[i].draw(ctx);
 	};
-	
+
 	countFps++;
 
 	if(countFps == 60){
@@ -96,7 +114,14 @@ function init() {
 	// Initialise keyboard controls
 	keys = new Keys();
 
-	socket = io.connect("http://localhost:8000");
+	var host = location.hostname;
+	var port = 8000;
+
+	socket = io.connect(host + ":" + port);
+
+	var startPos = new Utils().getStartPosition();
+
+	localPlayer = new Player(null, grid, startPos.i*grid.width, startPos.j*grid.height, null, null);
 
 	// Start listening for events
 	setEventHandlers();
@@ -122,96 +147,134 @@ function setEventHandlers(){
 	// New bomb received
 	socket.on("new bomb", onNewBomb);
 
-	// New bomb received
-	socket.on("update id", onUpdateId);
-
 	// Player move message received
 	socket.on("move player", onMovePlayer);
 
 	// Player removed message received
 	socket.on("remove player", onRemovePlayer);
 
+	// Item removed message received
+	socket.on("remove item", onRemoveItem);
+
 	// Player removed message received
 	socket.on("killed player", onKilledPlayer);
 
 	// Explode bombs
 	socket.on("explode bomb", onExplodeBomb);
+
+	// Explode bombs
+	socket.on("update dead players", onUpdateDeadPlayers);
+
+	// New Item
+	socket.on("new item", onNewItem);
 }
 
 // Socket connected
 function onSocketConnected() {
 	console.log("Connected to socket server");
+	appendNewPlayer(localPlayer);
 };
 
 // Socket disconnected
 function onSocketDisconnect() {
 	console.log("Disconnected from socket server");
 	remotePlayers = [];
-	$("#panel-players-online").html();
 };
 
 // New player
-function onUpdateId(data) {
-	console.log("Updating the id " + data.id);
-
-	localPlayer = new Player(data.id, grid, data.x, data.y, data.image);
-
-	//$("#panel-players-online").append('<li class="list-group-item"><img src="img/agent_'+data.image+'.png" width="40px">'+data.name+'</li>');
-}
-// New player
 function onNewPlayer(data) {
-
-	var exitingPlayer = new ArrayUtils().getObjectById(remotePlayers, data.id);
-
-	// Player found
-	if (exitingPlayer) {
-		return;
-	};
-
 	console.log("New player connected: " + data.id);
 
 	// Initialise the new player
-	var newPlayer = new Player(data.id, grid, data.x, data.y, data.image);
-
-	$(".btn-player").prop("disabled", false);
-
-	$("#btn-player-"+data.image).prop("disabled", true);
-
-	$("#panel-players-online").append('<li class="list-group-item"><img src="img/agent_'+data.image+'.png" width="40px">'+data.name+'</li>');
+	var newPlayer = new Player(data.id, grid, data.x, data.y, data.image, data.name);
+	newPlayer.deadPlayers = data.deadPlayers;
 
 	// Add new player to the remote players array
 	remotePlayers.push(newPlayer);
 
+	appendNewPlayer(newPlayer);
+
 	console.log("Remote Players Connected: " + remotePlayers.length);
 };
+
+function onUpdateDeadPlayers(data){
+	console.log("Updating dead players: " + data.id);
+
+	var updatePlayer = new Utils().getObjectById(remotePlayers, data.id);
+
+	// Player not found
+	if (!updatePlayer) {
+		console.log("Player not found: "+data.id);
+		return;
+	};
+
+	// Update player position
+	updatePlayer.deadPlayers = data.deadPlayers;
+
+	$("#"+updatePlayer.id+" > span").html(updatePlayer.deadPlayers);
+	$("#"+updatePlayer.id+" > span").attr('title', updatePlayer.deadPlayers);
+
+	updateRanking();
+}
 
 // New player
 function onNewBomb(data) {
 	console.log("Receiving a bomb " + data.id);
 
 	// Initialise the new player
- 	var newBomb = new Bomb(data.id, grid, data.x, data.y, data.playerId);
+ 	var newBomb = new Bomb(data.id, grid, data.x, data.y, data.playerId, data.size);
 	newBomb.insertIn = data.insertIn;
 
 	// Add new bomb
 	bombs.push(newBomb);
 };
 
+// New Item
+function onNewItem(data) {
+	console.log("Receiving a new item " + data.type);
+
+	// Initialise the new player
+ 	var newItem = new Item(data.id, grid, data.x, data.y, data.type);
+
+	// Add new bomb
+	items.push(newItem);
+};
+
 function onExplodeBomb(data) {
 	console.log("Exploding the bomb " + data.id);
 
-	var bomb = new ArrayUtils().getObjectById(bombs, data.id);
+	var bomb = new Utils().getObjectById(bombs, data.id);
 
-	if(bomb.playerId == localPlayer.id){
+	if(bomb.playerId == socket.io.engine.id){
 		localPlayer.countBomb--;
 	}
 
 	bomb.explode = data.explode;
+
+	var explodedItems = bomb.explodedItems(items);
+
+	for(var i= 0 ; i < explodedItems.length; i++){
+		socket.emit("remove item", {id: explodedItems[i].id});
+	}
+
+	if(localPlayer.kill(bomb)){
+		// Notify other player
+		socket.emit("killed player", {bombId: bomb.id, ownerBombId: bomb.playerId, killedPlayerId: socket.io.engine.id});
+
+		// Desconnect the player
+		socket.disconnect();
+
+		// Remove the player of the screen
+		localPlayer.killed = true;
+
+		// Show the Game Over modal
+		$("#game-over").modal("show");
+	}
 }
 
 // Move player
 function onMovePlayer(data) {
-	var movePlayer = new ArrayUtils().getObjectById(remotePlayers, data.id);
+	var movePlayer = new Utils().getObjectById(remotePlayers, data.id);
 
 	// Player not found
 	if (!movePlayer) {
@@ -228,7 +291,7 @@ function onMovePlayer(data) {
 function onRemovePlayer(data) {
 	console.log("Removing player: " + data.id);
 
-	var removePlayer = new ArrayUtils().getObjectById(remotePlayers, data.id);
+	var removePlayer = new Utils().getObjectById(remotePlayers, data.id);
 
 	// Player not found
 	if (!removePlayer) {
@@ -236,29 +299,52 @@ function onRemovePlayer(data) {
 		return;
 	};
 
+	$("#"+removePlayer.id).remove();
+
 	// Remove player from array
 	remotePlayers.splice(remotePlayers.indexOf(removePlayer), 1);
+
+	updateRanking();
+
+	console.log("Remote Players Connected: " + remotePlayers.length);
+};
+
+// Remove player
+function onRemoveItem(data) {
+	console.log("Removing item: " + data.id);
+
+	var removedItem = new Utils().getObjectById(items, data.id);
+
+	if (!removedItem) {
+		util.log("Item not found: " + data.id);
+		return;
+	};
+
+	// Remove item from array
+	items.splice(items.indexOf(removedItem), 1);
 };
 
 // Remove player
 function onKilledPlayer(data) {
-	console.log("Killing player: " + data.id);
+	console.log("Player " + data.killedPlayerId + " killed");
 
-	var killedPlayer = new ArrayUtils().getObjectById(remotePlayers, data.id);
+	var killedPlayer = new Utils().getObjectById(remotePlayers, data.killedPlayerId);
 
-	if ( ! killedPlayer) {
-		// if(localPlayer.x == data.x && localPlayer.y == data.y){
-		if(localPlayer.id == data.id){
-			localPlayer.killed = true;
-			$("#game-over").modal("show");
-		}else{
-			// Player not found
-			console.log("Player not found: "+data.id);
-		}
-	}else {
-		// Remove player from array
-		remotePlayers.splice(remotePlayers.indexOf(killedPlayer), 1);
+	if(data.ownerBombId == socket.io.engine.id){
+		localPlayer.deadPlayers++;
+
+		$("#"+data.ownerBombId+" > span").html(localPlayer.deadPlayers);
+		$("#"+data.ownerBombId+" > span").attr('title', localPlayer.deadPlayers);
+
+		socket.emit("update dead players", {id: socket.io.engine.id, deadPlayers:localPlayer.deadPlayers});
 	}
+
+	$("#"+data.killedPlayerId).remove();
+
+	updateRanking();
+
+	// Remove player from array
+	remotePlayers.splice(remotePlayers.indexOf(killedPlayer), 1);
 };
 
 // Keyboard key down
@@ -287,12 +373,16 @@ $(function(){
 	    console.log("Sorry! No Web Storage support");
 	}
 
+	$('#choose-a-player').on('shown.bs.modal', function () {
+	    $('#input-player-name').focus();
+	});
+
 	$('#select-image-type').selectpicker();
-	
+
 	// Declare the canvas and rendering context
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");
-	
+
 	// Initialise grid
 	grid = new Grid();
 
@@ -302,10 +392,11 @@ $(function(){
 	// Initialise bombs
 	bombs = [];
 
+	items = [];
+
 	resizeCanvas();
 
 	// Load user's preferences
-
 	var name = localStorage.getItem("name");
 	var image = localStorage.getItem("image");
 
@@ -319,23 +410,27 @@ $(function(){
 	$.validate({
 		form : '#form-new-player',
 		onSuccess : function($form) {
+
 			$("#choose-a-player").modal("hide");
 
-			
-			
 			var name = $("#input-player-name").val();
 			var image = $("#select-image-type").val();
 
 			//Save the user's option on the localstorage
-
 			localStorage.setItem("name", name);
 			localStorage.setItem("image", image);
-			
-			// Send local player data to the game server
-			socket.emit("new player", {image: image, name:name});
 
-			return false; // Will stop the submission of the form
-		},		
+			init();
+
+			localPlayer.name = name;
+			localPlayer.image = image;
+
+			// Send local player data to the game server
+			socket.emit("new player", {image: localPlayer.image, name: localPlayer.name, x: localPlayer.x, y: localPlayer.y});
+
+			// Will stop the submission of the form
+			return false;
+		},
 	});
 
 	playerImages['1'] = 'img/agent_1.png';
@@ -357,16 +452,20 @@ $(function(){
 	sceneryImages['explode'] = 'img/explode.png';
 	sceneryImages['wall'] = 'img/wall.png';
 	sceneryImages['explosion'] = 'img/explosion_0.png';
+	sceneryImages['item_bomb_1'] = 'img/item_bomb_1.png';
+	sceneryImages['item_bomb_2'] = 'img/item_bomb_2.png';
+	sceneryImages['item_sun_1'] = 'img/item_sun_1.png';
+	sceneryImages['item_sun_2'] = 'img/item_sun_2.png';
 
 	var allImages = [];
 
 	for(key in playerImages){
 		allImages.push(playerImages[key]);
-	} 
+	}
 
 	for(key in sceneryImages){
 		allImages.push(sceneryImages[key]);
-	} 
+	}
 
 	resources.load(allImages);
 
@@ -379,15 +478,14 @@ $(function(){
 			sceneryImages[key] = resources.get(sceneryImages[key]);
 		}
 
-		init();
 		animate();
 
 		$("#choose-a-player").modal({
 			backdrop: 'static',
 			keyboard: true,
-			close: function(event, ui){ 
+			close: function(event, ui){
 				$(this).dialog('close');
-			} 
+			}
 		});
 	});
 });

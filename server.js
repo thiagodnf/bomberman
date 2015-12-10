@@ -12,7 +12,7 @@ var util = require("util"),
     Grid = require("./js/core/grid.js").Grid;
     Item = require("./js/core/item.js").Item;
     portServer = process.env.PORT || 3000;
-    portClient = process.env.PORT || 8080;
+    portClient = 8080;
 
 var socket,
     players,

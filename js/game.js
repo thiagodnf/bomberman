@@ -347,13 +347,16 @@ $(function(){
 	playerImages['7'] = 'img/bomber_3.png';
 	playerImages['8'] = 'img/bomber_4.png';
 	playerImages['9'] = 'img/bomber_5.png';
+	playerImages['10'] = 'img/bomber_0.png';
 
+	//é scenary
 	sceneryImages['bomb_0'] = 'img/bomb_0.png';
 	sceneryImages['bomb_1'] = 'img/bomb_1.png';
 	sceneryImages['bomb_2'] = 'img/bomb_2.png';
 	sceneryImages['bomb_3'] = 'img/bomb_3.png';
 	sceneryImages['explode'] = 'img/explode.png';
 	sceneryImages['wall'] = 'img/wall.png';
+	sceneryImages['explosion'] = 'img/explosion.png';
 
 	var allImages = [];
 

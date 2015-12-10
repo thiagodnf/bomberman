@@ -12,7 +12,7 @@ var Bomb = function(id, grid, x, y, playerId) {
     this.insertIn = new Date().getTime(),
 	this.x = x;
   	this.y = y;
-    this.size = 3;
+    this.size = 10;
     this.explode = null;
     this.playerId = playerId;
 
@@ -51,16 +51,38 @@ var Bomb = function(id, grid, x, y, playerId) {
 
 	this.draw = function(ctx) {
         if(this.explode){
+
             var range = this.getRange();
 
             for(var i = 0; i < range.length; i++){
-                this.drawRange(range[i].x, range[i].y);
+                var x = range[i].x,
+                    y = range[i].y;
+
+                if(x > this.x || x < this.x) {
+
+                    console.log(range);
+                    if(i != range.length-1 && i != 0)
+                        ctx.drawImage(sceneryImages['explosion'], 32, 0, 32, 32, range[i].x, range[i].y, this.grid.width, this.grid.height);
+                    
+                    if(x < this.x && i == 0)
+                        this.drawRange(range[i].x, range[i].y);//ctx.drawImage(sceneryImages['explosion'], 0, 64, 32, 32, range[i].x, range[i].y, this.grid.width, this.grid.height);
+                    
+                    if(x > this.x && i == range.length-1)
+                        ctx.drawImage(sceneryImages['explosion'], 0, 64, 32, 32, range[i].x, range[i].y, this.grid.width, this.grid.height);
+                }
+
+                //if(y > this.y || y < this.y)
+                //    if(y > this.y && i == range.length-1)
+                //        ctx.drawImage(sceneryImages['explosion'], 64, 0, 32, 32, range[i].x, range[i].y, this.grid.width, this.grid.height);
+                //    else
+                //        ctx.drawImage(sceneryImages['explosion'], 64, 0, 32, 32, range[i].x, range[i].y, this.grid.width, this.grid.height);
             }
 
-            this.drawRange(this.x, this.y);
+            //draw center
+            ctx.drawImage(sceneryImages['explosion'], 0, 0, 32, 32, this.x, this.y, this.grid.width, this.grid.height);
         }else{
-		var type = Math.floor(countFps/15);
-		ctx.drawImage(sceneryImages['bomb_'+type], this.x, this.y, this.grid.width, this.grid.height);
+    		var index = Math.floor(countFps/15);
+    		ctx.drawImage(sceneryImages['bomb_'+index], this.x, this.y, this.grid.width, this.grid.height);
         }
 	};
 

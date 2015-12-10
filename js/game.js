@@ -356,7 +356,7 @@ $(function(){
 	sceneryImages['bomb_3'] = 'img/bomb_3.png';
 	sceneryImages['explode'] = 'img/explode.png';
 	sceneryImages['wall'] = 'img/wall.png';
-	sceneryImages['explosion'] = 'img/explosion.png';
+	sceneryImages['explosion'] = 'img/explosion_0.png';
 
 	var allImages = [];
 

@@ -1,0 +1,31 @@
+{
+	"name": "bomberman",
+	"version": "1.0.0",
+	"description": "Bomberman",
+	"main": "server.js",
+	"scripts": {
+		"start": "node server.js"
+	},
+	"engines": {
+		"node": ">=0.10.0"
+	},
+	"files": [
+		"server.js"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/thiagodnf/bomberman"
+	},
+	"author": "Thiago Nascimento",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/thiagodnf/bomberman/issues"
+	},
+	"homepage": "https://github.com/thiagodnf/bomberman",
+	"dependencies": {
+		"serve-static": "",
+		"connect": "",
+		"socket.io":"",
+		"express":""
+  	}
+}

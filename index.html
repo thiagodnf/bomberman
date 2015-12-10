@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1" />
+		<title>Bomberman</title>
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/bootstrap-select.min.css">
+		<link rel="stylesheet" href="css/style.css">
+	</head>
+	<body>
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">Bomberman</a>
+				</div>
+				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="#about">About</a></li>
+					</ul>
+				</div><!--/.nav-collapse -->
+			</div>
+		</nav>
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-9">
+					<div id="div-canvas">
+						<canvas id="canvas" width="480" height="480">
+							Sorry, browser does not support canvas.
+						</canvas>
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Players</h3>
+						</div>
+						<ul class="list-group" id="panel-players-online">
+
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal" role="dialog" id="choose-a-player">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<form id="form-new-player">
+						<div class="modal-body">
+							<div class="form-group">
+								<label for="input-player-name">Player Name:</label>
+								<input type="text" class="form-control" id="input-player-name" data-validation="required" data-validation-error-msg="Please type a player name">
+							</div>
+							<div class="form-group">
+								<label for="select-image-type">Choose an image:</label>
+								<select class="form-control" data-validation="required" id="select-image-type">
+									<option value="1" data-content="<img width='30px' src='img/agent_1.png'> Vaccum Red">Vaccum Red</option>
+									<option value="2" data-content="<img width='30px' src='img/agent_2.png'> Vaccum Green">Vaccum Green</option>
+									<option value="3" data-content="<img width='30px' src='img/agent_3.png'> Vaccum Blue">Vaccum Blue</option>
+									<option value="4" data-content="<img width='30px' src='img/agent_4.png'> Vaccum Yellow">Vaccum Yellow</option>
+									<option value="5" data-content="<img width='30px' src='img/bomber_1.png'> Bomber One">Bomber One</option>
+									<option value="6" data-content="<img width='30px' src='img/bomber_2.png'> Bomber Two">Bomber Two</option>
+									<option value="7" data-content="<img width='30px' src='img/bomber_3.png'> Bomber Three">Bomber Three</option>
+									<option value="8" data-content="<img width='30px' src='img/bomber_4.png'> Bomber Four">Bomber Four</option>
+									<option value="9" data-content="<img width='30px' src='img/bomber_5.png'> Bomber Five">Bomber Five</option>
+								</select>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary" id="btn-close-chooser-player">Play</button>
+						</div>
+					</form>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+
+		<div class="modal fade" role="dialog" id="game-over">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<form id="form-new-player">
+						<div class="modal-body">
+							<center>
+								<h2>Game Over</h2>
+							</center>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary" id="btn-restart">Restart</button>
+						</div>
+					</form>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+
+		<script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
+		<script src="js/jquery.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/bootstrap-select.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tinysort/2.2.2/tinysort.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.2.8/jquery.form-validator.min.js"></script>
+		<script src="js/core/requestAnimationFrame.js"></script>
+		<script src="js/core/resources.js"></script>
+		<script src="js/core/utils.js"></script>
+		<script src="js/core/graphics.js"></script>
+		<script src="js/core/keys.js"></script>
+		<script src="js/core/bomb.js"></script>
+		<script src="js/core/item.js"></script>
+		<script src="js/core/player.js"></script>
+		<script src="js/core/grid.js"></script>
+		<script src="js/game.js"></script>
+	</body>
+</html>

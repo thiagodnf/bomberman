@@ -1,0 +1,32 @@
+body{
+	padding-top: 80px;
+	background-image: url("../img/floor.png");
+	background-repeat: repeat-y repeat-x;
+}
+
+#div-canvas{
+	padding-top: 32px;
+	padding-left: 32px;
+	width: 544px;
+	height: 544px;
+	padding-bottom: 34px;
+	background-image: url("../img/wall.png");
+	background-size: 32px 32px;
+	background-repeat: repeat-y repeat-x;
+}
+
+canvas {
+	background-image: url("../img/floor.png");
+	background-repeat: repeat-y repeat-x;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.navbar {
+   background:rgba(0,0,0,0.2);   /* for latest browsers */
+   border-color: transparent;
+}

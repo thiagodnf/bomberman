@@ -116,7 +116,7 @@ function init() {
 
 	console.log(window.location.host);
 
-	if(window.location.host == 'thiagodnf.github.io/bomberman/'){
+	if(window.location.host == 'thiagodnf.github.io'){
 		socket = io.connect("thiagodnf-bomberman-server.herokuapp.com");
 	}else{
 		socket = io.connect("localhost:3000");

@@ -1,4 +1,4 @@
-git push origin :gh-pages
+#git push origin :gh-pages
 git branch -D gh-pages
 
 git checkout --orphan gh-pages

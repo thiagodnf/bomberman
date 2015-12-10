@@ -1,0 +1,10 @@
+{
+  "name": "bomberman",
+  "description": "bomberman",
+  "repository": "https://github.com/thiagodnf/bomberman",
+  "website": "https://github.com/thiagodnf/bomberman",
+  "keywords": ["bomberman"],
+  "env": {
+
+  }
+}

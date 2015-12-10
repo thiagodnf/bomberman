@@ -1,4 +1,7 @@
 var util = require("util"),
+    express = require('express'),
+    app = express(),
+    server = require('http').createServer(app),
     io = require("socket.io"),
     os = require('os');
 	Player = require("./js/core/player.js").Player;
@@ -22,7 +25,10 @@ function init() {
     var port = process.env.PORT || 8000;
 
     // Set up Socket.IO to listen on port 8000
-	socket = io.listen(port);
+	// socket = io.listen(port);
+    socket = io.listen(server);
+
+    server.listen(port);
 
 	// Start listening for events
 	setEventHandlers();

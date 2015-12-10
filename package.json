@@ -25,6 +25,7 @@
 	"dependencies": {
 		"serve-static": "",
 		"connect": "",
-		"socket.io":""
+		"socket.io":"",
+		"express":""
   	}
 }

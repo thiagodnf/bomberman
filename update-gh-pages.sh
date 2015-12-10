@@ -1,5 +1,5 @@
 git push origin :gh-pages
-git branch -d gh-pages
+git branch -D gh-pages
 
 git checkout --orphan gh-pages
 git add .

@@ -206,11 +206,7 @@ function explodeBombs(){
         bombs.splice(bombs.indexOf(bombsToremove[i]), 1);
     }
 
-    if(players.length == 0){
-        items = [];
-    }
-
-    if(Math.random() <= 0.0025){
+    if(Math.random() <= 0.0025 && players.length >= 2){
         releaseAnItem();
     }
 

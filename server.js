@@ -18,17 +18,20 @@ function init() {
     bombs = [];
     items = [];
 
+    // Define the used port
+    var port = process.env.PORT || 8000;
+
     // Set up Socket.IO to listen on port 8000
-	socket = io.listen(8000);
+	socket = io.listen(port);
 
 	// Start listening for events
 	setEventHandlers();
 
     setTimeout(explodeBombs(), 10);
 
-    util.log("Running at " + getLocalIp());
+    util.log("Running at " + getLocalIp()+":"+port);
 
-    util.log("Waiting the players");
+    util.log("Waiting the players...");
 };
 
 // Return the IP server

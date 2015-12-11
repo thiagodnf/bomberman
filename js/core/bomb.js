@@ -69,6 +69,8 @@ var Bomb = function(id, grid, x, y, playerId, size) {
 	this.draw = function(ctx) {
         if(this.explode){
 
+            var index = Math.floor(countFps/12);
+
             var range = this.getRange();
 
             for(var i = 0; i < range.length; i++){
@@ -78,24 +80,24 @@ var Bomb = function(id, grid, x, y, playerId, size) {
 
                 if(x > this.x || x < this.x) {
                     if(x > this.x && r == this.size)
-                        ctx.drawImage(sceneryImages['explosion'], 0, 64, 32, 32, x, y, this.grid.width, this.grid.height);
+                        ctx.drawImage(sceneryImages['fire_'+index], 0, 64, 32, 32, x, y, this.grid.width, this.grid.height);
                     else if(x < this.x && r == this.size)
-                        ctx.drawImage(sceneryImages['explosion'], 32, 32, 32, 32, x, y, this.grid.width, this.grid.height);
+                        ctx.drawImage(sceneryImages['fire_'+index], 32, 32, 32, 32, x, y, this.grid.width, this.grid.height);
                     else
-                        ctx.drawImage(sceneryImages['explosion'], 32, 0, 32, 32, x, y, this.grid.width, this.grid.height);
+                        ctx.drawImage(sceneryImages['fire_'+index], 32, 0, 32, 32, x, y, this.grid.width, this.grid.height);
                 } else {
                     
                     if(y > this.y && r == this.size)  
-                        ctx.drawImage(sceneryImages['explosion'], 0, 32, 32, 32, x, y, this.grid.width, this.grid.height);
+                        ctx.drawImage(sceneryImages['fire_'+index], 0, 32, 32, 32, x, y, this.grid.width, this.grid.height);
                     else if(y < this.y && r == this.size)
-                        ctx.drawImage(sceneryImages['explosion'], 32, 64, 32, 32, x, y, this.grid.width, this.grid.height);
+                        ctx.drawImage(sceneryImages['fire_'+index], 32, 64, 32, 32, x, y, this.grid.width, this.grid.height);
                     else
-                        ctx.drawImage(sceneryImages['explosion'], 64, 0, 32, 32, x, y, this.grid.width, this.grid.height);
+                        ctx.drawImage(sceneryImages['fire_'+index], 64, 0, 32, 32, x, y, this.grid.width, this.grid.height);
                 }
             }
 
             //draw center
-            ctx.drawImage(sceneryImages['explosion'], 0, 0, 32, 32, this.x, this.y, this.grid.width, this.grid.height);
+            ctx.drawImage(sceneryImages['fire_'+index], 0, 0, 32, 32, this.x, this.y, this.grid.width, this.grid.height);
         }else{
     		var index = Math.floor(countFps/15);
     		ctx.drawImage(sceneryImages['bomb_'+index], this.x, this.y, this.grid.width, this.grid.height);

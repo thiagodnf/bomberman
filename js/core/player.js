@@ -25,13 +25,13 @@ var Player = function(id, grid, x, y, image, name) {
 	this.size = 1;
 	this.direction = 3;
 
-    this.init = function(){
-  		var freePositions = this.grid.getFreePositions();
-  		var index = this.getRandomIntegerNumber(0, freePositions.length-1);
-  		var startPoint = freePositions[index];
-  		this.x = startPoint.i*this.grid.width;
-      this.y = startPoint.j*this.grid.height;
-    }
+  this.init = function(){
+		var freePositions = this.grid.getFreePositions();
+		var index = this.getRandomIntegerNumber(0, freePositions.length-1);
+		var startPoint = freePositions[index];
+		this.x = startPoint.i*this.grid.width;
+    this.y = startPoint.j*this.grid.height;
+  }
 
 	this.getRandomIntegerNumber = function(min,max){
 		return Math.floor((Math.random() * (max)) + min);
@@ -135,7 +135,7 @@ var Player = function(id, grid, x, y, image, name) {
 	this.hasWallOnTheLeft = function(){
 		return this.grid.hasWall(this.getPosI() - 1, this.getPosJ());
 	};
-
+ 
 	this.hasWallOnTheTop = function(){
 		return this.grid.hasWall(this.getPosI(), this.getPosJ() - 1);
 	};
@@ -166,10 +166,12 @@ var Player = function(id, grid, x, y, image, name) {
             return;
         }
         
+        var walking = keys.up || keys.down || keys.left || keys.right;
+        var count = Math.floor(countFps/15);
         var index = this.direction;
 
         if(this.image != null){
-        	ctx.drawImage(playerImages['10'], 0, index*52, 32, 52, this.x, this.y-20, this.grid.width, this.grid.height+20);
+        	ctx.drawImage(playerImages['10'], walking*count*32, index*52, 32, 52, this.x, this.y-20, this.grid.width, this.grid.height+20);
             //ctx.drawImage(playerImages[this.image], this.x, this.y, this.grid.width, this.grid.height);
         }
 	};

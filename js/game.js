@@ -451,7 +451,11 @@ $(function(){
 	sceneryImages['bomb_3'] = 'img/bomb_3.png';
 	sceneryImages['explode'] = 'img/explode.png';
 	sceneryImages['wall'] = 'img/wall.png';
-	sceneryImages['explosion'] = 'img/explosion_0.png';
+	sceneryImages['fire_0'] = 'img/explosion_0.png';
+	sceneryImages['fire_1'] = 'img/explosion_1.png';
+	sceneryImages['fire_2'] = 'img/explosion_2.png';
+	sceneryImages['fire_3'] = 'img/explosion_3.png';
+	sceneryImages['fire_4'] = 'img/explosion_4.png';
 	sceneryImages['item_bomb_1'] = 'img/item_bomb_1.png';
 	sceneryImages['item_bomb_2'] = 'img/item_bomb_2.png';
 	sceneryImages['item_sun_1'] = 'img/item_sun_1.png';

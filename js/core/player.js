@@ -13,18 +13,31 @@ if (typeof exports == "undefined") {
 
 var Player = function(id, grid, x, y, image, name) {
 	this.id = id;
-    this.image = image;
+
+	this.image = image;
 	this.grid = grid;
 	this.x = x;
-  	this.y = y;
-    this.name = name;
-    this.killed = false;
-    this.maxBomb = 2;
-    this.countBomb = 0;
-    this.size = 1;
-    this.deadPlayers = 0;
+	this.y = y;
+	this.name = name;
+	this.killed = false;
+	this.maxBomb = 1;
+	this.countBomb = 0;
+	this.size = 1;
+	this.direction = 3;
 
-	this.kill = function(bomb){
+  this.init = function(){
+		var freePositions = this.grid.getFreePositions();
+		var index = this.getRandomIntegerNumber(0, freePositions.length-1);
+		var startPoint = freePositions[index];
+		this.x = startPoint.i*this.grid.width;
+    this.y = startPoint.j*this.grid.height;
+  }
+
+	this.getRandomIntegerNumber = function(min,max){
+		return Math.floor((Math.random() * (max)) + min);
+	};
+
+    this.kill = function(bomb){
         if(this.killed){
             return false;
         }
@@ -75,10 +88,11 @@ var Player = function(id, grid, x, y, image, name) {
 	this.update = function(keys) {
 		// Previous position
 		var prevX = this.x,
-			prevY = this.y;
+		    prevY = this.y;
 
 		// Up key takes priority over down
 		if (keys.up) {
+          this.direction = 3;
       		if(this.y > 0 && ! this.hasWallOnTheTop() && ! this.hasBombAt(TOP)){
         		this.y -= this.grid.height;
         		if(this.y % this.grid.height == 0){
@@ -86,6 +100,7 @@ var Player = function(id, grid, x, y, image, name) {
         		}
       		}
 		} else if (keys.down) {
+          this.direction = 0;
       		if(this.y < this.grid.height*(this.grid.maxJ-1) && ! this.hasWallOnTheBottom() && ! this.hasBombAt(BOTTOM)){
 	        	this.y += this.grid.height;
 	        	if(this.y % this.grid.height == 0){
@@ -93,6 +108,7 @@ var Player = function(id, grid, x, y, image, name) {
 				}
       		}
 		} else if (keys.left) {
+         	this.direction = 2;
       		if(this.x > 0 && ! this.hasWallOnTheLeft() && ! this.hasBombAt(LEFT)){
         		this.x -= this.grid.width;
         		if(this.x % this.grid.width == 0){
@@ -100,10 +116,11 @@ var Player = function(id, grid, x, y, image, name) {
         		}
       		}
 		} else if (keys.right) {
+          	this.direction = 1;
 			if(this.x < this.grid.width*(this.grid.maxI-1) && ! this.hasWallOnTheRight() && ! this.hasBombAt(RIGHT)){
         		this.x += this.grid.width;
         		if(this.x % this.grid.width == 0){
-          			keys.right = false;
+        			keys.right = false;
         		}
       		}
 		}
@@ -118,7 +135,7 @@ var Player = function(id, grid, x, y, image, name) {
 	this.hasWallOnTheLeft = function(){
 		return this.grid.hasWall(this.getPosI() - 1, this.getPosJ());
 	};
-
+ 
 	this.hasWallOnTheTop = function(){
 		return this.grid.hasWall(this.getPosI(), this.getPosJ() - 1);
 	};
@@ -148,9 +165,14 @@ var Player = function(id, grid, x, y, image, name) {
         if( this.killed){
             return;
         }
+        
+        var walking = keys.up || keys.down || keys.left || keys.right;
+        var count = Math.floor(countFps/15);
+        var index = this.direction;
 
         if(this.image != null){
-            ctx.drawImage(playerImages[this.image], this.x, this.y, this.grid.width, this.grid.height);
+        	ctx.drawImage(playerImages['10'], walking*count*32, index*52, 32, 52, this.x, this.y-20, this.grid.width, this.grid.height+20);
+            //ctx.drawImage(playerImages[this.image], this.x, this.y, this.grid.width, this.grid.height);
         }
 	};
 

@@ -449,13 +449,20 @@ $(function(){
 	playerImages['7'] = 'img/bomber_3.png';
 	playerImages['8'] = 'img/bomber_4.png';
 	playerImages['9'] = 'img/bomber_5.png';
+	playerImages['10'] = 'img/bomber_0.png';
 
+	//é scenary
 	sceneryImages['bomb_0'] = 'img/bomb_0.png';
 	sceneryImages['bomb_1'] = 'img/bomb_1.png';
 	sceneryImages['bomb_2'] = 'img/bomb_2.png';
 	sceneryImages['bomb_3'] = 'img/bomb_3.png';
 	sceneryImages['explode'] = 'img/explode.png';
 	sceneryImages['wall'] = 'img/wall.png';
+	sceneryImages['fire_0'] = 'img/explosion_0.png';
+	sceneryImages['fire_1'] = 'img/explosion_1.png';
+	sceneryImages['fire_2'] = 'img/explosion_2.png';
+	sceneryImages['fire_3'] = 'img/explosion_3.png';
+	sceneryImages['fire_4'] = 'img/explosion_4.png';
 	sceneryImages['item_bomb_1'] = 'img/item_bomb_1.png';
 	sceneryImages['item_bomb_2'] = 'img/item_bomb_2.png';
 	sceneryImages['item_sun_1'] = 'img/item_sun_1.png';
